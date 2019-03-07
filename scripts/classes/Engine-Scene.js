@@ -15,5 +15,8 @@ class Scene {
         this.objects.forEach(element => {
             element.update();
         });
+        this.lights.forEach(element => {
+            element.update();
+        });
     }
 }

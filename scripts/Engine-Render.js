@@ -1,7 +1,7 @@
 class Renderer {
     render(objects, lights, cam) {
         // 캔버스 초기화
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "gray";
         ctx.fillRect(0, 0, canvas.width, canvas.height);    
 
         // 오브젝트들의 좌표를 카메라의 각도, 위치에 따라 조정한 후 원근 투시를 적용
@@ -22,7 +22,7 @@ class Renderer {
                     point.z /= point.y / 500;
                     polygon.point.push(point);
 
-                    if (point.y == 0) tooClose = true; 
+                    if (point.y <= 0) tooClose = true; 
                 });
 
                 if (tooClose == false) rotatedObjects.push(polygon);
@@ -40,7 +40,7 @@ class Renderer {
                     type:'light'
                 };
 
-                rotatedObjects.push(circle);
+                if (pos.y > 0) rotatedObjects.push(circle);
             }
         });
 
@@ -93,7 +93,7 @@ class Renderer {
             else if (element1.type == 'light') {
                 ctx.beginPath();
                 ctx.fillStyle = `rgb(${element1.color.r},${element1.color.g},${element1.color.b})`;
-                ctx.arc(element1.pos.x + canvas.width / 2, element1.pos.z + canvas.height / 2, 2300 / element1.pos.y, 0, 2 * Math.PI);
+                ctx.arc(element1.pos.x + canvas.width / 2, -element1.pos.z + canvas.height / 2, 2300 / element1.pos.y, 0, 2 * Math.PI);
                 ctx.fill();
             }
         });
@@ -111,7 +111,7 @@ class Renderer {
 
         if (vectorScaleSq(vectorSub(vectorSub(center, center2), crossProduct(vectorSub(points[0], points[2]), vectorSub(points[0], points[1]))))
             >= vectorScaleSq(vectorSub(vectorSub(center, center2), crossProduct(vectorSub(points[0], points[1]), vectorSub(points[0], points[2]))))) {
-            normalVector = crossProduct(vectorSub(points[0], points[2]), vectorSub(points[0], points[1]));
+                normalVector = crossProduct(vectorSub(points[0], points[2]), vectorSub(points[0], points[1]));
         } else {
             normalVector = crossProduct(vectorSub(points[0], points[1]), vectorSub(points[0], points[2]));
         }
@@ -120,11 +120,21 @@ class Renderer {
             if (element.type == 'direct') {
                 var angle = Math.acos(innerProduct(toUnitVector(normalVector), toUnitVector(element.vector)));
                 var cos = Math.cos(angle);
-                if (angle <= 1000) {
-                    nowColor.r += cos * element.color.r;
-                    nowColor.g += cos * element.color.g;
-                    nowColor.b += cos * element.color.b;
-                }
+
+                nowColor.r += toPositive(cos * element.color.r);
+                nowColor.g += toPositive(cos * element.color.g);
+                nowColor.b += toPositive(cos * element.color.b);
+            }
+            else if (element.type == 'point') {
+                var angle = Math.acos(innerProduct(toUnitVector(normalVector), toUnitVector(vectorSub(element.pos, center2))));
+                var cos = Math.cos(angle);
+
+                var distance = vectorScaleSq(vectorSub(element.pos, center2));
+                var maxDistance = element.distance * element.distance;
+
+                nowColor.r += toPositive(cos * element.color.r * ((maxDistance / distance > 3) ? 3 : (maxDistance / distance)));
+                nowColor.g += toPositive(cos * element.color.g * ((maxDistance / distance > 3) ? 3 : (maxDistance / distance)));
+                nowColor.b += toPositive(cos * element.color.b * ((maxDistance / distance > 3) ? 3 : (maxDistance / distance)));
             }
         });
 
