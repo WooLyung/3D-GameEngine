@@ -40,7 +40,7 @@ class Renderer {
                     type:'light'
                 };
 
-                //if (pos.y > 0) rotatedObjects.push(circle);
+                if (pos.y > 0) rotatedObjects.push(circle);
             }
         });
 
