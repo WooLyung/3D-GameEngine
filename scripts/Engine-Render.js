@@ -1,7 +1,7 @@
 class Renderer {
     render(objects, lights, cam) {
         // 캔버스 초기화
-        ctx.fillStyle = "gray";
+        ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);    
 
         // 오브젝트들의 좌표를 카메라의 각도, 위치에 따라 조정한 후 원근 투시를 적용
@@ -40,7 +40,7 @@ class Renderer {
                     type:'light'
                 };
 
-                if (pos.y > 0) rotatedObjects.push(circle);
+                //if (pos.y > 0) rotatedObjects.push(circle);
             }
         });
 
@@ -132,9 +132,9 @@ class Renderer {
                 var distance = vectorScaleSq(vectorSub(element.pos, center2));
                 var maxDistance = element.distance * element.distance;
 
-                nowColor.r += toPositive(cos * element.color.r * ((maxDistance / distance > 3) ? 3 : (maxDistance / distance)));
-                nowColor.g += toPositive(cos * element.color.g * ((maxDistance / distance > 3) ? 3 : (maxDistance / distance)));
-                nowColor.b += toPositive(cos * element.color.b * ((maxDistance / distance > 3) ? 3 : (maxDistance / distance)));
+                nowColor.r += toPositive(cos * element.color.r * ((maxDistance / distance > 1) ? 1 : (maxDistance / distance)));
+                nowColor.g += toPositive(cos * element.color.g * ((maxDistance / distance > 1) ? 1 : (maxDistance / distance)));
+                nowColor.b += toPositive(cos * element.color.b * ((maxDistance / distance > 1) ? 1 : (maxDistance / distance)));
             }
         });
 
@@ -142,7 +142,7 @@ class Renderer {
             r:color.r * nowColor.r / 255,
             g:color.g * nowColor.g / 255,
             b:color.b * nowColor.b / 255,
-            a:color.a
+            a:color.a / 255
         };
     }
 }
