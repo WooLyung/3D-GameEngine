@@ -1,10 +1,10 @@
 class Renderer {
     render(objects, lights, cam) {
         // 캔버스 초기화
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "black";
         ctx.fillRect(0, 0, canvas.width, canvas.height);    
 
-        // 오브젝트들의 좌표를 카메라의 각도, 위치에 따라 조정한 후 원근 투시를 적용
+        // 오브젝트를 회전 후 오브젝트들의 좌표를 카메라의 각도, 위치에 따라 조정한 후 원근 투시를 적용
         let rotatedObjects = [];
         objects.forEach(element1 => {
             element1.polygons.forEach(element2 => {
@@ -16,8 +16,8 @@ class Renderer {
                 let tooClose = false;
 
                 element2.point.forEach(element3 => {
-                    
-                    let point = matrixMul(vectorSub(vectorAdd(element3, element1.pos), cam.pos), getRotationMatrix('xyz', cam.angle.x, cam.angle.y, cam.angle.z));
+                    let point = matrixMul(element3, getRotationMatrix('xyz', element1.angle.x, element1.angle.y, element1.angle.z));
+                    point = matrixMul(vectorSub(vectorAdd(point, element1.pos), cam.pos), getRotationMatrix('xyz', cam.angle.x, cam.angle.y, cam.angle.z));
                     point.x /= point.y / 500;
                     point.z /= point.y / 500;
                     polygon.point.push(point);

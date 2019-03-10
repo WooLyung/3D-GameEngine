@@ -162,13 +162,13 @@ for (let i = 0; i < 7; i++) {
     }
 }
 engine.nowScene.objects.push(
-    new GameObject(pols, {x:0, y:0, z:0})
+    new GameObject(pols, {x:0, y:0, z:0}, {x:Math.PI / 3.5, y:0, z:0})
 );
 engine.nowScene.objects.push(
-    new GameObject(pols2, {x:0, y:0, z:0})
+    new GameObject(pols2, {x:0, y:0, z:0}, {x:0, y:0, z:0})
 );
 engine.nowScene.objects.push(
-    new GameObject(pols3, {x:0, y:0, z:0})
+    new GameObject(pols3, {x:0, y:0, z:0}, {x:0, y:0, z:0})
 );
 
 engine.nowScene.lights.push(new Light('point', {r:0, g:0, b:255}, {x:0, y:-350, z:0}, 160));
@@ -242,16 +242,6 @@ var editY = 5.5;
 var editZ = 2;
 var speed = 1.5;
 var editSpeed = -1.5;
-
-engine.nowScene.objects[0].update = function() {
-    this.polygons.forEach((element1, index1) => {
-        element1.point.forEach((element2, index2) => {
-            this.polygons[index1].point[index2] =  matrixMul(this.polygons[index1].point[index2], getRotationMatrix(angle, engine.time.deltaTime * speed));
-        });
-    });
-}
-engine.nowScene.objects[1].update = engine.nowScene.objects[0].update;
-engine.nowScene.objects[2].update = engine.nowScene.objects[0].update;
 
 engine.nowScene.lights[0].update = function() {this.pos = matrixMul(this.pos, getRotationMatrix({x:1, y:0, z:0}, engine.time.deltaTime * 1.4))};
 engine.nowScene.lights[1].update = function() {this.pos = matrixMul(this.pos, getRotationMatrix({x:1, y:0, z:1}, engine.time.deltaTime * 1.4))};
